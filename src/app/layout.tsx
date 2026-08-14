@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { AppShell } from "@/components/AppShell";
+import { BackgroundCanvas } from "@/components/BackgroundCanvas";
+import { GrainOverlay } from "@/components/GrainOverlay";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
@@ -30,6 +32,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        <BackgroundCanvas />
+        <GrainOverlay />
         <AppShell>{children}</AppShell>
       </body>
     </html>

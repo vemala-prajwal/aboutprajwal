@@ -39,7 +39,7 @@ export function ProjectWindow({ project }: { project: Project }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.98 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className="fixed left-1/2 top-1/2 z-40 max-h-[calc(100dvh-7rem)] w-[calc(100%-2rem)] max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(25,25,25,0.95)] backdrop-blur-[16px]"
+        className="fixed left-1/2 top-1/2 z-40 max-h-[calc(100dvh-7rem)] w-[calc(100%-2rem)] max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.95)] backdrop-blur-[16px]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-title"
@@ -86,7 +86,7 @@ export function ProjectWindow({ project }: { project: Project }) {
               </span>
             </div>
             <div className="grid grid-cols-[1.45fr_0.85fr] gap-3">
-              <div className="aspect-[16/10] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(0,0,0,0.16)] p-3">
+              <div className="aspect-[16/10] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.9)] p-3">
                 <div className="flex h-full flex-col border border-[var(--color-border)] p-2">
                   <div className="mb-3 flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
@@ -105,13 +105,13 @@ export function ProjectWindow({ project }: { project: Project }) {
                 </div>
               </div>
               <div className="grid gap-3">
-                <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(0,0,0,0.12)] p-3">
+                <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.9)] p-3">
                   <span className="absolute right-3 top-3 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
                     01
                   </span>
                   <div className="mt-5 h-1/2 border border-[var(--color-border)]" />
                 </div>
-                <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(0,0,0,0.12)] p-3">
+                <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.9)] p-3">
                   <span className="absolute right-3 top-3 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
                     02
                   </span>

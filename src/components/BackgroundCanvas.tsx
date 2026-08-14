@@ -41,21 +41,21 @@ export function BackgroundCanvas() {
 
     const rootStyles = getComputedStyle(document.documentElement);
     const colors = {
-      background: rootStyles.getPropertyValue("--bg-base").trim() || "#131313",
+      background: rootStyles.getPropertyValue("--bg-base").trim() || "#FAFAF8",
       glow:
         rootStyles.getPropertyValue("--accent-glow").trim() ||
-        "rgba(124, 152, 133, 0.05)",
+        "rgba(201, 166, 107, 0.06)",
       dotIdle: readRgba(rootStyles.getPropertyValue("--dot-idle"), {
-        red: 255,
-        green: 255,
-        blue: 255,
+        red: 0,
+        green: 0,
+        blue: 0,
         alpha: 0.12,
       }),
       dotActive: readRgba(rootStyles.getPropertyValue("--dot-active"), {
-        red: 255,
-        green: 255,
-        blue: 255,
-        alpha: 0.55,
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: 0.6,
       }),
     };
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");

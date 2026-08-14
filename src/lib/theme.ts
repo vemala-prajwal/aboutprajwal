@@ -1,12 +1,12 @@
 export const theme = {
   colors: {
-    bg: "#141414",
-    bgElevated: "#191919",
-    text: "#F2F2F0",
-    textMuted: "#A3A3A0",
-    accent: "#8BA888",
-    border: "rgba(242, 242, 240, 0.08)",
-    borderHover: "rgba(242, 242, 240, 0.16)",
+    bg: "#FAFAF8",
+    bgElevated: "#ffffff",
+    text: "#1A1A1A",
+    textMuted: "#5A5A5A",
+    accent: "#C9A66B",
+    border: "rgba(26, 26, 26, 0.08)",
+    borderHover: "rgba(26, 26, 26, 0.12)",
   },
   radius: {
     sm: "4px",

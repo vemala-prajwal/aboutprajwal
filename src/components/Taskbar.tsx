@@ -14,7 +14,7 @@ export function Taskbar() {
 
   return (
     <header className="fixed bottom-6 left-1/2 z-20 -translate-x-1/2">
-      <div className="flex items-center gap-1 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,20,0.72)] px-2 py-1.5 backdrop-blur-[12px]">
+      <div className="flex items-center gap-1 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.8)] px-2 py-1.5 backdrop-blur-[12px]">
         <nav className="flex items-center gap-1" aria-label="Main">
           {navItems.map((item) => {
             const active =
