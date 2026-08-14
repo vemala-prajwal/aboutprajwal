@@ -1,201 +1,130 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-const GRID_SPACING = 36;
-const IDLE_RADIUS = 1.5;
-const ACTIVE_RADIUS = 3.2;
-const ACTIVATION_RADIUS = 140;
-
-type Rgba = {
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
-};
-
-function readRgba(value: string, fallback: Rgba): Rgba {
-  const channels = value.match(/[\d.]+/g)?.map(Number);
-
-  if (!channels || channels.length < 3) return fallback;
-
-  return {
-    red: channels[0],
-    green: channels[1],
-    blue: channels[2],
-    alpha: channels[3] ?? fallback.alpha,
-  };
-}
-
-function rgba({ red, green, blue }: Rgba, alpha: number) {
-  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
-}
-
-export function BackgroundCanvas() {
+export default function BackgroundCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const rootStyles = getComputedStyle(document.documentElement);
-    const colors = {
-      background: rootStyles.getPropertyValue("--bg-base").trim() || "#FAFAF8",
-      glow:
-        rootStyles.getPropertyValue("--accent-glow").trim() ||
-        "rgba(201, 166, 107, 0.06)",
-      dotIdle: readRgba(rootStyles.getPropertyValue("--dot-idle"), {
-        red: 0,
-        green: 0,
-        blue: 0,
-        alpha: 0.12,
-      }),
-      dotActive: readRgba(rootStyles.getPropertyValue("--dot-active"), {
-        red: 0,
-        green: 0,
-        blue: 0,
-        alpha: 0.6,
-      }),
-    };
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const mouse = { x: -ACTIVATION_RADIUS, y: -ACTIVATION_RADIUS };
+    let width = 0;
+    let height = 0;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dots: { x: number; y: number }[] = [];
+    const spacing = 36;
+    const mouse = { x: -9999, y: -9999 };
+    let animationId: number;
+    let glowT = 0;
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    let reducedMotion = motionQuery.matches;
-    let animationFrame = 0;
-    let resizeFrame = 0;
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
 
-    const draw = (time: number) => {
-      context.fillStyle = colors.background;
-      context.fillRect(0, 0, width, height);
-
-      if (!reducedMotion) {
-        const phase = (time / 38000) * Math.PI * 2;
-        const glowX = width * (0.5 + Math.sin(phase) * 0.2);
-        const glowY = height * (0.5 + Math.cos(phase * 0.82) * 0.18);
-        const glowRadius = width * 0.4;
-        const glow = context.createRadialGradient(
-          glowX,
-          glowY,
-          0,
-          glowX,
-          glowY,
-          glowRadius,
-        );
-
-        glow.addColorStop(0, colors.glow);
-        glow.addColorStop(1, "transparent");
-        context.fillStyle = glow;
-        context.fillRect(0, 0, width, height);
-      }
-
-      for (let y = GRID_SPACING / 2; y <= height; y += GRID_SPACING) {
-        for (let x = GRID_SPACING / 2; x <= width; x += GRID_SPACING) {
-          const distance = Math.hypot(mouse.x - x, mouse.y - y);
-          const falloff =
-            !reducedMotion && distance < ACTIVATION_RADIUS
-              ? (1 - distance / ACTIVATION_RADIUS) ** 2
-              : 0;
-          const opacity =
-            colors.dotIdle.alpha +
-            (colors.dotActive.alpha - colors.dotIdle.alpha) * falloff;
-          const radius = IDLE_RADIUS + (ACTIVE_RADIUS - IDLE_RADIUS) * falloff;
-
-          context.beginPath();
-          context.arc(x, y, radius, 0, Math.PI * 2);
-          context.fillStyle = rgba(colors.dotActive, opacity);
-          context.fill();
-        }
-      }
-    };
-
-    const stopAnimation = () => {
-      cancelAnimationFrame(animationFrame);
-      animationFrame = 0;
-    };
-
-    const animate = (time: number) => {
-      draw(time);
-
-      if (!reducedMotion && !document.hidden) {
-        animationFrame = requestAnimationFrame(animate);
-      } else {
-        animationFrame = 0;
-      }
-    };
-
-    const startAnimation = () => {
-      if (!reducedMotion && !document.hidden && !animationFrame) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function resize() {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      context.setTransform(dpr, 0, 0, dpr, 0, 0);
-      draw(performance.now());
-    };
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const onResize = () => {
-      cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(resize);
-    };
+      dots = [];
+      for (let x = spacing / 2; x < width; x += spacing) {
+        for (let y = spacing / 2; y < height; y += spacing) {
+          dots.push({ x, y });
+        }
+      }
+    }
 
-    const onMouseMove = (event: MouseEvent) => {
-      if (reducedMotion) return;
-      mouse.x = event.clientX;
-      mouse.y = event.clientY;
-    };
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
 
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        stopAnimation();
-        return;
+      // base fill
+      ctx.fillStyle = '#FAFAF8';
+      ctx.fillRect(0, 0, width, height);
+
+      // slow drifting glow
+      glowT += 0.0025;
+      const glowX = width * 0.5 + Math.sin(glowT) * width * 0.3;
+      const glowY = height * 0.5 + Math.cos(glowT * 0.8) * height * 0.3;
+      const glowRadius = Math.max(width, height) * 0.45;
+      const gradient = ctx.createRadialGradient(
+        glowX, glowY, 0,
+        glowX, glowY, glowRadius
+      );
+      gradient.addColorStop(0, 'rgba(201,166,107,0.06)'); // accent glow
+      gradient.addColorStop(1, 'rgba(201,166,107,0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      // dot grid, brightens near cursor
+      const reactRadius = 140;
+      for (const dot of dots) {
+        const dx = dot.x - mouse.x;
+        const dy = dot.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        let t = 0;
+        if (dist < reactRadius) {
+          t = 1 - dist / reactRadius;
+          t = t * t; // ease
+        }
+        const alpha = 0.10 + t * 0.35;
+        const radius = 1.5 + t * 1.5;
+
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+        ctx.fill();
       }
 
-      draw(performance.now());
-      startAnimation();
-    };
+      if (!reducedMotion) {
+        animationId = requestAnimationFrame(draw);
+      }
+    }
 
-    const onMotionChange = (event: MediaQueryListEvent) => {
-      reducedMotion = event.matches;
-      mouse.x = -ACTIVATION_RADIUS;
-      mouse.y = -ACTIVATION_RADIUS;
-      stopAnimation();
-      draw(performance.now());
-      startAnimation();
-    };
+    function handleMouseMove(e: MouseEvent) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }
+
+    function handleVisibility() {
+      if (document.hidden) {
+        cancelAnimationFrame(animationId);
+      } else if (!reducedMotion) {
+        animationId = requestAnimationFrame(draw);
+      }
+    }
 
     resize();
-    startAnimation();
-    window.addEventListener("resize", onResize);
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    motionQuery.addEventListener("change", onMotionChange);
+    draw(); // draw at least one frame immediately, even with reduced motion
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('visibilitychange', handleVisibility);
 
     return () => {
-      stopAnimation();
-      cancelAnimationFrame(resizeFrame);
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      motionQuery.removeEventListener("change", onMotionChange);
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 0,
+        pointerEvents: 'none',
+        display: 'block',
+      }}
     />
   );
 }
