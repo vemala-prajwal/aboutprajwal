@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Inter_Tight, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { AppShell } from "@/components/AppShell";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
-const interTight = Inter_Tight({
+const interTight = localFont({
+  src: "../../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2",
   variable: "--font-inter-tight",
-  subsets: ["latin"],
   display: "swap",
+  weight: "100 900",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
+  src: "../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
   variable: "--font-jetbrains",
-  subsets: ["latin"],
   display: "swap",
+  weight: "100 800",
 });
 
 export const metadata: Metadata = {

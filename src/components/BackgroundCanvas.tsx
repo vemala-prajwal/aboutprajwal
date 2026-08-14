@@ -2,141 +2,191 @@
 
 import { useEffect, useRef } from "react";
 
-function noise(x: number, y: number, t: number) {
-  return (
-    Math.sin(x * 0.003 + t * 0.0004) * 0.5 +
-    Math.sin(y * 0.004 - t * 0.0003) * 0.5 +
-    Math.sin((x + y) * 0.002 + t * 0.0002) * 0.3
-  );
+const GRID_SPACING = 36;
+const IDLE_RADIUS = 1.5;
+const ACTIVE_RADIUS = 3.2;
+const ACTIVATION_RADIUS = 140;
+
+type Rgba = {
+  red: number;
+  green: number;
+  blue: number;
+  alpha: number;
+};
+
+function readRgba(value: string, fallback: Rgba): Rgba {
+  const channels = value.match(/[\d.]+/g)?.map(Number);
+
+  if (!channels || channels.length < 3) return fallback;
+
+  return {
+    red: channels[0],
+    green: channels[1],
+    blue: channels[2],
+    alpha: channels[3] ?? fallback.alpha,
+  };
+}
+
+function rgba({ red, green, blue }: Rgba, alpha: number) {
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
 export function BackgroundCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const rafRef = useRef<number>(0);
-  const pausedRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
+    const rootStyles = getComputedStyle(document.documentElement);
+    const colors = {
+      background: rootStyles.getPropertyValue("--bg-base").trim() || "#131313",
+      glow:
+        rootStyles.getPropertyValue("--accent-glow").trim() ||
+        "rgba(124, 152, 133, 0.05)",
+      dotIdle: readRgba(rootStyles.getPropertyValue("--dot-idle"), {
+        red: 255,
+        green: 255,
+        blue: 255,
+        alpha: 0.12,
+      }),
+      dotActive: readRgba(rootStyles.getPropertyValue("--dot-active"), {
+        red: 255,
+        green: 255,
+        blue: 255,
+        alpha: 0.55,
+      }),
+    };
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mouse = { x: -ACTIVATION_RADIUS, y: -ACTIVATION_RADIUS };
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
     let reducedMotion = motionQuery.matches;
+    let animationFrame = 0;
+    let resizeFrame = 0;
 
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      if (window.innerWidth < 768) return;
-      mouseRef.current = {
-        x: (e.clientX / window.innerWidth - 0.5) * 12,
-        y: (e.clientY / window.innerHeight - 0.5) * 12,
-      };
-    };
-
-    const pause = () => {
-      pausedRef.current = true;
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = 0;
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-    window.addEventListener("mousemove", onMouseMove);
-
-    const start = performance.now();
-
-    const draw = (now: number) => {
-      if (pausedRef.current) return;
-
-      const t = reducedMotion ? 0 : now - start;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const px = mouseRef.current.x;
-      const py = mouseRef.current.y;
-
-      ctx.fillStyle = "#121212";
-      ctx.fillRect(0, 0, w, h);
-
-      const blobs = [
-        { cx: 0.25, cy: 0.35, r: 0.55, color: "rgba(30, 32, 28, 0.9)" },
-        { cx: 0.72, cy: 0.28, r: 0.45, color: "rgba(22, 24, 26, 0.85)" },
-        { cx: 0.55, cy: 0.75, r: 0.5, color: "rgba(18, 20, 22, 0.8)" },
-        { cx: 0.15, cy: 0.78, r: 0.35, color: "rgba(139, 168, 136, 0.04)" },
-      ];
-
-      for (const blob of blobs) {
-        const drift = reducedMotion
-          ? 0
-          : noise(blob.cx * w, blob.cy * h, t) * 24;
-        const x = blob.cx * w + px + drift;
-        const y = blob.cy * h + py - drift * 0.5;
-        const radius = blob.r * Math.max(w, h);
-
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        gradient.addColorStop(0, blob.color);
-        gradient.addColorStop(1, "rgba(18, 18, 18, 0)");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, w, h);
-      }
+    const draw = (time: number) => {
+      context.fillStyle = colors.background;
+      context.fillRect(0, 0, width, height);
 
       if (!reducedMotion) {
-        rafRef.current = requestAnimationFrame(draw);
+        const phase = (time / 38000) * Math.PI * 2;
+        const glowX = width * (0.5 + Math.sin(phase) * 0.2);
+        const glowY = height * (0.5 + Math.cos(phase * 0.82) * 0.18);
+        const glowRadius = width * 0.4;
+        const glow = context.createRadialGradient(
+          glowX,
+          glowY,
+          0,
+          glowX,
+          glowY,
+          glowRadius,
+        );
+
+        glow.addColorStop(0, colors.glow);
+        glow.addColorStop(1, "transparent");
+        context.fillStyle = glow;
+        context.fillRect(0, 0, width, height);
+      }
+
+      for (let y = GRID_SPACING / 2; y <= height; y += GRID_SPACING) {
+        for (let x = GRID_SPACING / 2; x <= width; x += GRID_SPACING) {
+          const distance = Math.hypot(mouse.x - x, mouse.y - y);
+          const falloff =
+            !reducedMotion && distance < ACTIVATION_RADIUS
+              ? (1 - distance / ACTIVATION_RADIUS) ** 2
+              : 0;
+          const opacity =
+            colors.dotIdle.alpha +
+            (colors.dotActive.alpha - colors.dotIdle.alpha) * falloff;
+          const radius = IDLE_RADIUS + (ACTIVE_RADIUS - IDLE_RADIUS) * falloff;
+
+          context.beginPath();
+          context.arc(x, y, radius, 0, Math.PI * 2);
+          context.fillStyle = rgba(colors.dotActive, opacity);
+          context.fill();
+        }
       }
     };
 
-    const resume = () => {
-      pausedRef.current = false;
+    const stopAnimation = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    };
 
-      if (!reducedMotion && !rafRef.current) {
-        rafRef.current = requestAnimationFrame(draw);
+    const animate = (time: number) => {
+      draw(time);
+
+      if (!reducedMotion && !document.hidden) {
+        animationFrame = requestAnimationFrame(animate);
+      } else {
+        animationFrame = 0;
       }
     };
 
-    const onVisibility = () => {
+    const startAnimation = () => {
+      if (!reducedMotion && !document.hidden && !animationFrame) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw(performance.now());
+    };
+
+    const onResize = () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(resize);
+    };
+
+    const onMouseMove = (event: MouseEvent) => {
+      if (reducedMotion) return;
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+    };
+
+    const onVisibilityChange = () => {
       if (document.hidden) {
-        pause();
-      } else if (document.hasFocus()) {
-        resume();
+        stopAnimation();
+        return;
       }
+
+      draw(performance.now());
+      startAnimation();
     };
 
     const onMotionChange = (event: MediaQueryListEvent) => {
       reducedMotion = event.matches;
-
-      if (reducedMotion) {
-        pause();
-        pausedRef.current = false;
-        draw(performance.now());
-      } else if (!document.hidden && document.hasFocus()) {
-        resume();
-      }
+      mouse.x = -ACTIVATION_RADIUS;
+      mouse.y = -ACTIVATION_RADIUS;
+      stopAnimation();
+      draw(performance.now());
+      startAnimation();
     };
 
-    document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("blur", pause);
-    window.addEventListener("focus", resume);
+    resize();
+    startAnimation();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange);
     motionQuery.addEventListener("change", onMotionChange);
 
-    pausedRef.current = document.hidden || !document.hasFocus();
-    draw(start);
-
     return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", resize);
+      stopAnimation();
+      cancelAnimationFrame(resizeFrame);
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("blur", pause);
-      window.removeEventListener("focus", resume);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       motionQuery.removeEventListener("change", onMotionChange);
     };
   }, []);
@@ -144,7 +194,7 @@ export function BackgroundCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      aria-hidden
+      aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0"
     />
   );

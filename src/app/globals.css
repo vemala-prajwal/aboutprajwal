@@ -1,11 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #141414;
+  --bg-base: #131313;
+  --dot-idle: rgba(255, 255, 255, 0.12);
+  --dot-active: rgba(255, 255, 255, 0.55);
+  --accent: #7c9885;
+  --accent-glow: rgba(124, 152, 133, 0.05);
+  --color-bg: var(--bg-base);
   --color-bg-elevated: #191919;
   --color-text: #f2f2f0;
-  --color-text-muted: #a3a3a0;
-  --color-accent: #8ba888;
+  --color-text-muted: #a6a6a2;
+  --color-accent: var(--accent);
   --color-border: rgba(242, 242, 240, 0.08);
   --color-border-hover: rgba(242, 242, 240, 0.16);
   --radius-sm: 4px;
@@ -15,6 +20,7 @@
 
 html {
   color-scheme: dark;
+  cursor: none;
 }
 
 @theme inline {
@@ -22,10 +28,6 @@ html {
   --color-foreground: var(--color-text);
   --font-sans: var(--font-inter-tight);
   --font-mono: var(--font-jetbrains);
-}
-
-html {
-  cursor: none;
 }
 
 @media (pointer: coarse) {
@@ -37,7 +39,8 @@ html {
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-inter-tight), system-ui, sans-serif;
+  font-family: var(--font-inter-tight), "Arial Narrow", sans-serif;
+  font-synthesis: none;
   overflow-x: hidden;
 }
 
@@ -88,8 +91,13 @@ textarea,
 }
 
 ::selection {
-  background: rgba(139, 168, 136, 0.25);
+  background: rgba(148, 171, 136, 0.25);
   color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
 }
 
 * {

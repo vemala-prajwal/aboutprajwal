@@ -26,17 +26,17 @@ export function ProjectGrid() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-6 md:px-8">
-      <header className="mb-12 pt-8 md:pt-16">
-        <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+    <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12">
+      <header className="grid gap-4 border-b border-[var(--color-border)] pb-12 pt-8 lg:grid-cols-12 lg:gap-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           File explorer
         </p>
-        <h1 className="text-3xl font-medium tracking-tight text-[var(--color-text)] md:text-4xl">
+        <h1 className="text-5xl font-medium leading-none tracking-[-0.05em] text-[var(--color-text)] md:text-6xl lg:col-span-8 lg:col-start-4">
           Projects
         </h1>
       </header>
 
-      <ul className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 md:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-x-4 gap-y-8 py-12 sm:grid-cols-3 md:grid-cols-4 md:gap-x-8 md:gap-y-12 lg:grid-cols-5">
         {projects.map((project) => {
           const isSelected = selected === project.slug;
 
@@ -54,7 +54,7 @@ export function ProjectGrid() {
                   }
                 }}
                 aria-pressed={isSelected}
-                className={`group flex w-full flex-col items-center gap-3 rounded-[var(--radius-md)] p-4 transition-colors duration-200 ${
+                className={`group flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-[var(--radius-md)] p-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] ${
                   isSelected
                     ? "bg-[rgba(242,242,240,0.04)] ring-1 ring-[var(--color-border-hover)]"
                     : "hover:bg-[rgba(242,242,240,0.02)]"
@@ -62,9 +62,9 @@ export function ProjectGrid() {
               >
                 <FolderIcon
                   selected={isSelected}
-                  className="h-12 w-12 transition-opacity duration-200 group-hover:opacity-100"
+                  className="h-14 w-14 transition-opacity duration-200 group-hover:opacity-100"
                 />
-                <span className="max-w-full truncate text-center font-mono text-[11px] text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
+                <span className="max-w-full truncate text-center font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
                   {project.filename}
                 </span>
               </button>
@@ -73,7 +73,7 @@ export function ProjectGrid() {
         })}
       </ul>
 
-      <p className="mt-12 hidden text-center text-xs text-[var(--color-text-muted)] md:block">
+      <p className="hidden font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-text-muted)] md:block">
         Double-click or press Enter to open. Single click selects.
       </p>
     </div>

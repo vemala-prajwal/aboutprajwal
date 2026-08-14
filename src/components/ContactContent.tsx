@@ -20,27 +20,29 @@ export function ContactContent() {
   };
 
   return (
-    <div className="mx-auto max-w-xl px-6 md:px-8">
-      <header className="mb-12 pt-8 md:pt-16">
-        <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+    <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12">
+      <header className="grid gap-4 border-b border-[var(--color-border)] pb-12 pt-8 lg:grid-cols-12 lg:gap-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           Contact
         </p>
-        <h1 className="mb-4 text-3xl font-medium tracking-tight text-[var(--color-text)] md:text-4xl">
-          {profile.name}
-        </h1>
-        <a
-          href={`mailto:${profile.email}`}
-          className="text-[var(--color-accent)] underline decoration-[var(--color-accent)]/30 underline-offset-4 transition-opacity duration-200 hover:opacity-80"
-        >
-          {profile.email}
-        </a>
+        <div className="lg:col-span-7 lg:col-start-4">
+          <h1 className="text-5xl font-medium leading-none tracking-[-0.05em] text-[var(--color-text)] md:text-6xl">
+            {profile.name}
+          </h1>
+          <a
+            href={`mailto:${profile.email}`}
+            className="mt-6 inline-block text-[var(--color-accent)] underline decoration-[var(--color-accent)]/30 underline-offset-4 transition-opacity duration-200 hover:opacity-80"
+          >
+            {profile.email}
+          </a>
+        </div>
       </header>
 
-      <section className="mb-12">
-        <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+      <section className="grid gap-8 border-b border-[var(--color-border)] py-16 lg:grid-cols-12">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           Links
         </p>
-        <ul className="space-y-3">
+        <ul className="space-y-4 lg:col-span-7 lg:col-start-4">
           <li>
             <a
               href={profile.social.linkedin}
@@ -64,13 +66,13 @@ export function ContactContent() {
         </ul>
       </section>
 
-      <section>
-        <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+      <section className="grid gap-8 py-16 lg:grid-cols-12">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           Send a message
         </p>
 
         {submitted ? (
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <p className="max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)] lg:col-span-7 lg:col-start-4">
             Your mail client should open shortly. If it doesn&apos;t, email me
             directly at{" "}
             <a
@@ -82,7 +84,7 @@ export function ContactContent() {
             .
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="max-w-xl space-y-8 lg:col-span-7 lg:col-start-4">
             <div>
               <label
                 htmlFor="name"
@@ -94,7 +96,7 @@ export function ContactContent() {
                 id="name"
                 name="name"
                 required
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-3 py-2.5 text-sm text-[var(--color-text)] outline-none transition-colors duration-200 focus:border-[var(--color-border-hover)]"
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-4 py-2 text-sm text-[var(--color-text)] outline-none transition-colors duration-200 focus:border-[var(--color-accent)]"
               />
             </div>
             <div>
@@ -109,7 +111,7 @@ export function ContactContent() {
                 name="email"
                 type="email"
                 required
-                className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-3 py-2.5 text-sm text-[var(--color-text)] outline-none transition-colors duration-200 focus:border-[var(--color-border-hover)]"
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-4 py-2 text-sm text-[var(--color-text)] outline-none transition-colors duration-200 focus:border-[var(--color-accent)]"
               />
             </div>
             <div>
@@ -124,12 +126,12 @@ export function ContactContent() {
                 name="message"
                 required
                 rows={5}
-                className="w-full resize-none rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-3 py-2.5 text-sm text-[var(--color-text)] outline-none transition-colors duration-200 focus:border-[var(--color-border-hover)]"
+                className="w-full resize-none rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-transparent px-4 py-2 text-sm text-[var(--color-text)] outline-none transition-colors duration-200 focus:border-[var(--color-accent)]"
               />
             </div>
             <button
               type="submit"
-              className="rounded-[var(--radius-sm)] border border-[var(--color-border)] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--color-text)] transition-colors duration-200 hover:border-[var(--color-border-hover)]"
+              className="rounded-[var(--radius-sm)] border border-[var(--color-border)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--color-text)] transition-colors duration-200 hover:border-[var(--color-accent)]"
             >
               Send
             </button>

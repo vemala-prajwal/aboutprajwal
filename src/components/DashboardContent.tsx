@@ -3,55 +3,59 @@ import { profile } from "@/content/profile";
 
 export function DashboardContent() {
   return (
-    <div className="mx-auto max-w-3xl px-6 md:px-8">
-      <section className="mb-20 pt-8 md:pt-16">
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-12">
-          <div className="shrink-0">
+    <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12">
+      <section className="grid gap-8 border-b border-[var(--color-border)] pb-16 pt-8 lg:grid-cols-12 lg:items-start lg:gap-8">
+        <div className="shrink-0 lg:col-span-2 lg:pt-2">
+          <div className="inline-block rounded-full border border-[var(--color-border)] p-1">
             <Image
               src={profile.avatar}
               alt={profile.name}
-              width={96}
-              height={96}
-              className="rounded-full border border-[var(--color-border)]"
+              width={112}
+              height={112}
+              className="rounded-full"
               priority
             />
           </div>
-          <div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
-              Profile
-            </p>
-            <h1 className="mb-3 text-4xl font-medium tracking-tight text-[var(--color-text)] md:text-5xl">
-              {profile.name}
-            </h1>
-            <p className="text-sm text-[var(--color-text-muted)]">
-              {profile.title}
-            </p>
-          </div>
+        </div>
+        <div className="lg:col-span-8 lg:col-start-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+            Profile
+          </p>
+          <h1 className="mt-4 max-w-3xl text-5xl font-medium leading-[0.92] tracking-[-0.055em] text-[var(--color-text)] md:text-7xl">
+            {profile.name}
+          </h1>
+          <p className="mt-6 text-base text-[var(--color-text-muted)] md:text-lg">
+            {profile.title}
+          </p>
         </div>
       </section>
 
-      <section className="mb-20">
-        <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+      <section className="grid gap-4 border-b border-[var(--color-border)] py-16 lg:grid-cols-12 lg:gap-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           About
         </p>
-        <div className="max-w-xl space-y-3 text-base leading-relaxed text-[var(--color-text)]">
+        <div className="max-w-2xl space-y-4 text-lg leading-relaxed text-[var(--color-text)] lg:col-span-7 lg:col-start-4">
           {profile.intro.map((line) => (
             <p key={line}>{line}</p>
           ))}
         </div>
       </section>
 
-      <section className="mb-20">
-        <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+      <section className="grid gap-8 border-b border-[var(--color-border)] py-16 lg:grid-cols-12">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           Education
         </p>
-        <ul className="space-y-6">
+        <ul className="border-l border-[var(--color-border)] lg:col-span-7 lg:col-start-4">
           {profile.education.map((item) => (
             <li
               key={item.institution}
-              className="border-b border-[var(--color-border)] pb-6 last:border-0"
+              className="relative border-b border-[var(--color-border)] py-6 pl-6 first:pt-0 last:border-0 last:pb-0"
             >
-              <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <span
+                aria-hidden
+                className="absolute -left-[5px] top-0 h-2 w-2 rounded-full border border-[var(--color-accent)] bg-[var(--color-bg)]"
+              />
+              <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between md:gap-8">
                 <div>
                   <p className="text-[var(--color-text)]">{item.institution}</p>
                   <p className="text-sm text-[var(--color-text-muted)]">
@@ -67,21 +71,24 @@ export function DashboardContent() {
         </ul>
       </section>
 
-      <section className="mb-20">
-        <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+      <section className="grid gap-8 border-b border-[var(--color-border)] py-16 lg:grid-cols-12">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           Skills & Interests
         </p>
-        <div className="space-y-8">
+        <div className="lg:col-span-7 lg:col-start-4">
           {Object.entries(profile.skills).map(([category, items]) => (
-            <div key={category}>
-              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+            <div
+              key={category}
+              className="grid gap-4 border-b border-[var(--color-border)] py-6 first:pt-0 last:border-0 last:pb-0 md:grid-cols-[8rem_minmax(0,1fr)]"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
                 {category}
               </p>
               <ul className="flex flex-wrap gap-2">
                 {items.map((skill) => (
                   <li
                     key={skill}
-                    className="rounded-[var(--radius-sm)] border border-[var(--color-border)] px-3 py-1.5 text-sm text-[var(--color-text)]"
+                    className="rounded-[var(--radius-sm)] border border-[var(--color-border)] px-2 py-1 text-sm text-[var(--color-text)]"
                   >
                     {skill}
                   </li>
@@ -92,15 +99,18 @@ export function DashboardContent() {
         </div>
       </section>
 
-      <section className="mb-8">
-        <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
+      <section className="grid gap-8 py-16 lg:grid-cols-12">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] lg:col-span-2">
           Outside work
         </p>
-        <ul className="space-y-5">
+        <ul className="lg:col-span-7 lg:col-start-4">
           {profile.hobbies.map((hobby) => (
-            <li key={hobby.name}>
+            <li
+              key={hobby.name}
+              className="grid gap-2 border-b border-[var(--color-border)] py-6 first:pt-0 last:border-0 last:pb-0 sm:grid-cols-[11rem_minmax(0,1fr)]"
+            >
               <p className="text-[var(--color-text)]">{hobby.name}</p>
-              <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
                 {hobby.description}
               </p>
             </li>

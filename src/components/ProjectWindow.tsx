@@ -57,7 +57,7 @@ export function ProjectWindow({ project }: { project: Project }) {
             className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-hover)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
             aria-label="Close"
           >
-            x
+            &times;
           </button>
         </header>
 
