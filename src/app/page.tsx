@@ -1,10 +1,9 @@
-import { DashboardContent } from "@/components/DashboardContent";
-import { PageTransition } from "@/components/PageTransition";
+import DashboardCards from '@/components/DashboardCards';
 
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <PageTransition>
-      <DashboardContent />
-    </PageTransition>
+    <main>
+      <DashboardCards />
+    </main>
   );
 }

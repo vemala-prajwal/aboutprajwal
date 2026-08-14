@@ -104,3 +104,134 @@ textarea,
   scrollbar-color: rgba(242, 242, 240, 0.18) transparent;
   scrollbar-width: thin;
 }
+
+:root {
+  --card-bg: #141414;
+  --card-border: rgba(255, 255, 255, 0.10);
+  --card-border-hover: rgba(255, 255, 255, 0.22);
+  --text-primary: #F4F4F2;
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --text-body: rgba(255, 255, 255, 0.68);
+  --accent: #C9A66B;
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  font-family: var(--font-grotesk);
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 12px 32px rgba(0, 0, 0, 0.25);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-border-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-iam {
+  padding: 32px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.card-iam-header {
+  margin-bottom: 24px;
+}
+
+.card-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: #262626;
+  margin: 0 auto 24px 40px;
+}
+
+.card-body {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-body);
+  margin: 0;
+  max-width: 420px;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.card-action {
+  height: 100%;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+}
+
+.card-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.card-name {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.card-cta {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: 20px;
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+.card-action:hover .card-cta {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .card-row {
+    grid-template-columns: 1fr;
+  }
+  .card-avatar {
+    margin: 0 0 20px 0;
+  }
+}
