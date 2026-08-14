@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #141414;
+  --color-bg-elevated: #191919;
+  --color-text: #f2f2f0;
+  --color-text-muted: #a3a3a0;
+  --color-accent: #8ba888;
+  --color-border: rgba(242, 242, 240, 0.08);
+  --color-border-hover: rgba(242, 242, 240, 0.16);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+}
+
+html {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
+  --font-sans: var(--font-inter-tight);
+  --font-mono: var(--font-jetbrains);
+}
+
+html {
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  html {
+    cursor: auto;
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-inter-tight), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+a,
+button,
+input,
+textarea,
+[role="button"] {
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  a,
+  button,
+  input,
+  textarea,
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    cursor: auto;
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::selection {
+  background: rgba(139, 168, 136, 0.25);
+  color: var(--color-text);
+}
+
+* {
+  scrollbar-color: rgba(242, 242, 240, 0.18) transparent;
+  scrollbar-width: thin;
+}
