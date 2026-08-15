@@ -28,7 +28,7 @@ export const profile = {
   },
   hobbies: [
     {
-      name: "Film photography",
+      name: "Photography",
       description: "Shooting on 35mm, mostly street and architecture.",
     },
     {

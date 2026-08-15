@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import AboutHero from '@/components/AboutHero';
@@ -5,9 +6,21 @@ import AboutHero from '@/components/AboutHero';
 const SKILLS = ['UI Design', 'UX Research', 'Figma', 'Prototyping'];
 const INTERESTS = ['Typography', 'Design Systems', 'Motion Design'];
 const HOBBIES = [
-  { title: 'Film Photography', desc: 'Shooting mostly on 35mm, developing at home when I can.' },
-  { title: 'Listening To Music', desc: 'Gives My Mind A Break' },
-  { title: 'Playing Football', desc: 'Still A Learner' },
+  {
+    title: 'Photography',
+    desc: 'Shooting mostly on 35mm, developing at home when I can.',
+    image: '/projects/photography.jpeg',
+  },
+  {
+    title: 'Listening To Music',
+    desc: 'Gives My Mind A Break',
+    image: '/projects/music.jpeg',
+  },
+  {
+    title: 'Playing Football',
+    desc: 'Still A Learner',
+    image: '/projects/football.jpeg',
+  },
 ];
 const EDUCATION = [
   { years: '2011 — 2021', title: '1st - 7th Grade', place: 'St. Thomus Public School' },
@@ -64,7 +77,15 @@ export default function AboutPage() {
             <div className="hobby-strip">
               {HOBBIES.map((h) => (
                 <div className="hobby-card" key={h.title}>
-                  <div className="hobby-icon" aria-hidden />
+                  <div className="hobby-icon">
+                    <Image
+                      src={h.image}
+                      alt={h.title}
+                      width={44}
+                      height={44}
+                      className="hobby-icon-img"
+                    />
+                  </div>
                   <div>
                     <p className="hobby-title">{h.title}</p>
                     <p className="hobby-desc">{h.desc}</p>
