@@ -1,91 +1,81 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-export function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+export default function CustomCursor() {
+  const dotRef = useRef<HTMLDivElement | null>(null);
+  const ringRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (isTouch || prefersReduce) return;
 
-    let ringRaf = 0;
-    let ringX = -100;
-    let ringY = -100;
-    let targetX = -100;
-    let targetY = -100;
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    if (!dot || !ring) return;
 
-    const setVisible = (visible: boolean) => {
-      if (dotRef.current) dotRef.current.style.opacity = visible ? "1" : "0";
-      if (ringRef.current) ringRef.current.style.opacity = visible ? "0.4" : "0";
-    };
+    let mouseX = -1000,
+      mouseY = -1000;
+    let ringX = -1000,
+      ringY = -1000;
+    let rafId = 0;
 
-    const moveRing = () => {
-      ringX += (targetX - ringX) * 0.16;
-      ringY += (targetY - ringY) * 0.16;
+    function handleMove(e: MouseEvent) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      dot.style.opacity = '1';
+      ring.style.opacity = '0.9';
+    }
 
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
-      }
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      rafId = requestAnimationFrame(animateRing);
+    }
 
-      if (Math.abs(targetX - ringX) > 0.1 || Math.abs(targetY - ringY) > 0.1) {
-        ringRaf = requestAnimationFrame(moveRing);
+    function handleMouseDown() {
+      ring.classList.add('cursor-ring-active');
+    }
+    function handleMouseUp() {
+      ring.classList.remove('cursor-ring-active');
+    }
+
+    function handleOver(e: MouseEvent) {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('a, button, [role="button"], input, textarea')) {
+        ring.classList.add('cursor-ring-hover');
       } else {
-        ringRaf = 0;
+        ring.classList.remove('cursor-ring-hover');
       }
-    };
+    }
 
-    const onMove = (e: MouseEvent) => {
-      targetX = e.clientX;
-      targetY = e.clientY;
-      setVisible(true);
-
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
-      }
-
-      if (!ringRaf) ringRaf = requestAnimationFrame(moveRing);
-    };
-
-    const onLeave = () => setVisible(false);
-
-    window.addEventListener("mousemove", onMove);
-    document.body.addEventListener("mouseleave", onLeave);
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mousemove', handleOver);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    rafId = requestAnimationFrame(animateRing);
 
     return () => {
-      cancelAnimationFrame(ringRaf);
-      window.removeEventListener("mousemove", onMove);
-      document.body.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mousemove', handleOver);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
     return null;
   }
 
   return (
     <>
-      <div
-        ref={dotRef}
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[100] hidden opacity-0 transition-opacity duration-200 md:block"
-        style={{
-          transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
-        }}
-      >
-        <div className="h-1.5 w-1.5 rounded-full bg-[var(--color-text)]" />
-      </div>
-      <div
-        ref={ringRef}
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[99] hidden opacity-0 transition-opacity duration-200 md:block"
-        style={{
-          transform: "translate3d(-100px, -100px, 0) translate(-50%, -50%)",
-        }}
-      >
-        <div className="h-6 w-6 rounded-full border border-[var(--color-text)]" />
-      </div>
+      <div ref={dotRef} className="custom-cursor-dot" aria-hidden />
+      <div ref={ringRef} className="custom-cursor-ring" aria-hidden />
     </>
   );
 }

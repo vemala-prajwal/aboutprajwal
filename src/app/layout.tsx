@@ -1,5 +1,6 @@
 import BackgroundCanvas from '@/components/BackgroundCanvas';
 import GrainOverlay from '@/components/GrainOverlay';
+import CustomCursor from '@/components/CustomCursor';
 import './globals.css';
 import { Instrument_Sans, Fraunces, Source_Serif_4 } from 'next/font/google';
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ margin: 0, background: 'transparent' }}>
         <BackgroundCanvas />
         <GrainOverlay />
+        <CustomCursor />
         <div style={{ position: 'relative', zIndex: 10 }}>
           {children}
         </div>

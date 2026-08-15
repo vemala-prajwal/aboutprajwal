@@ -20,7 +20,6 @@
 
 html {
   color-scheme: light;
-  cursor: none;
 }
 
 @theme inline {
@@ -33,6 +32,13 @@ html {
 @media (pointer: coarse) {
   html {
     cursor: auto;
+  }
+}
+
+/* Custom cursor: hide default cursor only on fine-pointer devices (mouse/trackpad) */
+@media (pointer: fine) {
+  * {
+    cursor: none;
   }
 }
 
@@ -55,7 +61,7 @@ button,
 input,
 textarea,
 [role="button"] {
-  cursor: none;
+  /* default pointer behavior is handled by the media query above; interactive elements will be handled by the custom cursor */
 }
 
 @media (pointer: coarse) {
@@ -398,6 +404,58 @@ textarea,
   top: 8%;
   width: 420px;
   height: 420px;
+
+/* Custom cursor elements */
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: #141414;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(20, 20, 20, 0.35);
+  pointer-events: none;
+  z-index: 9998;
+  will-change: transform;
+  transition: width 180ms ease, height 180ms ease, margin 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.custom-cursor-ring.cursor-ring-hover {
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-color: #3fae7c;
+  background: rgba(63, 174, 124, 0.06);
+}
+
+.custom-cursor-ring.cursor-ring-active {
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+}
+
+/* Hide the custom cursor elements on touch devices */
+@media (pointer: coarse) {
+  .custom-cursor-dot,
+  .custom-cursor-ring {
+    display: none;
+  }
+}
   background: radial-gradient(circle at 30% 30%, rgba(201,166,107,0.06), transparent 30%);
   filter: blur(36px);
   pointer-events: none;
