@@ -1,10 +1,53 @@
+"use client";
+
 import Link from 'next/link';
+import TestimonialCarousel from './TestimonialCarousel';
+
+function IconLink(props: { size?: number }) {
+  const s = props.size ?? 18;
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 14a3 3 0 0 1 0-4l3-3a3 3 0 0 1 4 4l-1 1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14 10a3 3 0 0 1 0 4l-3 3a3 3 0 0 1-4-4l1-1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconCode(props: { size?: number }) {
+  const s = props.size ?? 18;
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 18l6-6-6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" transform="translate(-8,0)" />
+      <path d="M8 6l-6 6 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" transform="translate(8,0)" />
+    </svg>
+  );
+}
+
+function IconMusic(props: { size?: number }) {
+  const s = props.size ?? 18;
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 17a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" transform="translate(0,-6)" />
+      <path d="M9 11V3l10 4v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconCalendar(props: { size?: number }) {
+  const s = props.size ?? 18;
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 const SOCIALS = [
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourname' },
-  { label: 'GitHub', href: 'https://github.com/yourname' },
-  { label: 'Spotify', href: 'https://open.spotify.com/user/yourname' },
-  { label: 'Calendly', href: 'https://calendly.com/yourname' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourname', Icon: IconLink },
+  { label: 'GitHub', href: 'https://github.com/yourname', Icon: IconCode },
+  { label: 'Spotify', href: 'https://open.spotify.com/user/yourname', Icon: IconMusic },
+  { label: 'Calendly', href: 'https://calendly.com/yourname', Icon: IconCalendar },
 ];
 
 export default function AboutHero() {
@@ -51,27 +94,24 @@ export default function AboutHero() {
         </a>
 
         <div className="hero-social-row">
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              className="hero-social-box"
-              aria-label={s.label}
-            >
-              {s.label.charAt(0)}
-            </a>
-          ))}
+          {SOCIALS.map((s) => {
+            const Icon = s.Icon;
+            return (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                className="hero-social-box"
+                aria-label={s.label}
+              >
+                <Icon size={18} strokeWidth={1.75} />
+              </a>
+            );
+          })}
         </div>
 
-        <blockquote className="hero-quote">
-          “A genuinely thoughtful designer — sharp instincts, clean process,
-          and someone who elevates every project they touch.”
-          <footer className="hero-quote-attr">
-            — Someone, Their Title at Company
-          </footer>
-        </blockquote>
+        <TestimonialCarousel />
       </aside>
     </section>
   );
