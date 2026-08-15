@@ -1,17 +1,12 @@
 import { notFound } from "next/navigation";
 import { PageTransition } from "@/components/PageTransition";
 import { ProjectWindow } from "@/components/ProjectWindow";
-import { getProject } from "@/content/projects";
+import { getProject, projects } from "@/content/projects";
 
 type ProjectPageProps = PageProps<"/projects/[slug]">;
 
 export function generateStaticParams() {
-  return [
-    { slug: "atlas-dashboard" },
-    { slug: "meridian-app" },
-    { slug: "studio-site" },
-    { slug: "flow-kit" },
-  ];
+  return projects.map((p) => ({ slug: p.slug }));
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
