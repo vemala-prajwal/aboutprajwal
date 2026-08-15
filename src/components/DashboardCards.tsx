@@ -13,13 +13,12 @@ export default function DashboardCards() {
         {/* LEFT HALF — I am, full-bleed photo, header top / bio bottom */}
         <div className="card card-iam">
           <Image
-            src="/profile-placeholder.svg"
-            alt="Profile photo"
+            src="/profile.jpg"
+            alt="Alex Morgan"
             fill
             className="card-iam-photo"
-            style={{ objectFit: 'cover' }}
-            placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAKAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            style={{ objectFit: 'contain', objectPosition: 'center' }}
+            unoptimized
             priority
           />
           <div className="card-iam-scrim-top" />

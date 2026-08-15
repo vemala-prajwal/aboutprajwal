@@ -7,9 +7,36 @@ export type Project = {
   summary: string;
   description: string[];
   tags: string[];
+  logo?: string;
+  features?: string[];
+  tech?: string[];
+  link?: string;
 };
 
 export const projects: Project[] = [
+  {
+    slug: "team-egb",
+    filename: "team-egb",
+    title: "Team EGB",
+    year: "2024",
+    role: "Developer",
+    summary: "E-contribution platform for community fundraising.",
+    description: [
+      "Built an online contribution workflow to let supporters donate and track contributions.",
+      "Provided an admin dashboard to view totals and manage campaigns.",
+      "Implemented simple member-facing pages with secure payment integration.",
+    ],
+    tags: ["Web", "Payments", "Dashboard"],
+    logo: "/projects/team-egb-logo.jpeg",
+    images: ["/projects/egb-desktop.jpg", "/projects/team-egb-mobile.jpeg"],
+    features: [
+      "Online contribution & payment collection",
+      "Member contribution history",
+      "Admin reporting dashboard",
+    ],
+    tech: ["Next.js", "Stripe", "TailwindCSS"],
+    link: "",
+  },
   {
     slug: "atlas-dashboard",
     filename: "atlas-dashboard.fig",
