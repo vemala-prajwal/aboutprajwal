@@ -35,12 +35,7 @@ html {
   }
 }
 
-/* Custom cursor: hide default cursor only on fine-pointer devices (mouse/trackpad) */
-@media (pointer: fine) {
-  * {
-    cursor: none;
-  }
-}
+/* Previously hid the native cursor on pointer devices; removed to restore browser cursor */
 
 body {
   background: var(--color-bg);
