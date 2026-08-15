@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FolderOpen, Mail } from 'lucide-react';
@@ -10,6 +11,33 @@ const SHORT_BIO = `A student aware of AI product designer blending creativity, s
 const PARTICLES = Array.from({ length: 10 }, (_, i) => i);
 
 export default function DashboardCards() {
+  const heroSectionRef = useRef<HTMLDivElement>(null);
+  const scrollCueRef = useRef<HTMLButtonElement>(null);
+  const secondarySectionRef = useRef<HTMLDivElement>(null);
+
+  // Fade the scroll cue out once user scrolls past the hero section
+  useEffect(() => {
+    const heroEl = heroSectionRef.current;
+    const cueEl = scrollCueRef.current;
+    if (!heroEl || !cueEl) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When hero section leaves viewport, fade cue out
+        cueEl.style.opacity = entry.isIntersecting ? '' : '0';
+        cueEl.style.pointerEvents = entry.isIntersecting ? '' : 'none';
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(heroEl);
+    return () => observer.disconnect();
+  }, []);
+
+  function handleScrollCueClick() {
+    secondarySectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
   return (
     <section className="dashboard-wrap">
       <div className="dashboard-ambient" aria-hidden>
@@ -32,44 +60,75 @@ export default function DashboardCards() {
         ))}
       </div>
 
+      {/* ── DESKTOP: unified grid ── MOBILE: hero section (full viewport) */}
       <div className="dashboard-stage">
         <div className="dashboard-grid">
-          {/* LEFT HALF — I am, full-bleed photo, header top / bio bottom */}
-          <Link href="/about" className="card-wrapper card-wrapper--iam">
-            <div className="card-inner card-iam">
-              <span className="card-index">01</span>
-              <Image
-                src="/projects/profile.png"
-                alt="Vemala Prajwal"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="card-iam-photo"
-                style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
-                priority
-              />
-              <div className="card-iam-scrim-top" />
-              <div className="card-iam-scrim-bottom" />
 
-              <div className="card-iam-header">
-                <p className="card-eyebrow">I am</p>
-                <h2 className="card-name hero-name">
-                  <span className="hero-name__secondary">Vemala</span>
-                  <span className="hero-name__divider" aria-hidden />
-                  <span className="hero-name__primary">Prajwal</span>
-                </h2>
-              </div>
+          {/* Hero section wrapper — on mobile becomes a full-viewport centered section */}
+          <div className="dashboard-hero-section" ref={heroSectionRef}>
+            <div className="dashboard-hero-card">
+              <Link href="/about" className="card-wrapper card-wrapper--iam">
+                <div className="card-inner card-iam">
+                  <span className="card-index">01</span>
+                  <Image
+                    src="/projects/profile.png"
+                    alt="Vemala Prajwal"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="card-iam-photo"
+                    style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
+                    priority
+                  />
+                  <div className="card-iam-scrim-top" />
+                  <div className="card-iam-scrim-bottom" />
 
-              <div className="card-iam-footer">
-                <p className="card-body card-body-clamp">{SHORT_BIO}</p>
-                <span className="card-readmore">
-                  Read more <span className="arrow">→</span>
-                </span>
-              </div>
+                  <div className="card-iam-header">
+                    <p className="card-eyebrow">I am</p>
+                    <h2 className="card-name hero-name">
+                      <span className="hero-name__secondary">Vemala</span>
+                      <span className="hero-name__divider" aria-hidden />
+                      <span className="hero-name__primary">Prajwal</span>
+                    </h2>
+                  </div>
+
+                  <div className="card-iam-footer">
+                    <p className="card-body card-body-clamp">{SHORT_BIO}</p>
+                    <span className="card-readmore">
+                      Read more <span className="arrow">→</span>
+                    </span>
+                  </div>
+                </div>
+              </Link>
             </div>
-          </Link>
 
-          {/* RIGHT HALF — Projects + Contact stacked */}
-          <div className="card-stack">
+            {/* Scroll-down cue — mobile only (hidden via CSS on desktop) */}
+            <button
+              ref={scrollCueRef}
+              className="scroll-cue"
+              aria-label="Scroll down to see more"
+              onClick={handleScrollCueClick}
+              type="button"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 6l5 5 5-5"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Secondary section — Projects + Contact */}
+          <div className="card-stack dashboard-secondary-section" ref={secondarySectionRef}>
             <Link href="/projects" className="card-wrapper">
               <div className="card-inner card-action card-action--projects">
                 <span className="card-index">02</span>
@@ -100,6 +159,7 @@ export default function DashboardCards() {
               </div>
             </Link>
           </div>
+
         </div>
       </div>
     </section>

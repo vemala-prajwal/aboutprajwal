@@ -755,6 +755,22 @@ textarea,
   min-height: 100dvh;
 }
 
+/* ─── Scroll cue — hidden on desktop, shown via mobile overrides below ─── */
+.scroll-cue {
+  display: none; /* hidden by default; shown only in mobile MQ */
+}
+
+/* ─── Hero / secondary section wrappers — transparent on desktop ─── */
+.dashboard-hero-section,
+.dashboard-secondary-section {
+  /* On desktop these are just pass-through wrappers inside the grid */
+  display: contents;
+}
+
+.dashboard-hero-card {
+  display: contents;
+}
+
 .dashboard-wrap {
   position: relative;
   min-height: 100vh;
@@ -1402,14 +1418,77 @@ textarea,
 }
 
 @media (max-width: 768px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  /* ── Page scrollability ── */
+  .dashboard-page {
+    scroll-snap-type: y proximity;
+    overflow-y: auto;
   }
+
+  /* ── Unwrap the grid; switch to vertical document flow ── */
   .dashboard-wrap {
-    padding: clamp(32px, 5vh, 48px) 18px calc(var(--space-12) + 72px);
-    align-items: flex-start;
+    /* Let it be as tall as its content — hero + secondary stack */
+    min-height: unset;
+    padding: 0;
+    align-items: unset;
+    justify-content: unset;
+    /* Keep ambient layer but drop the flex centering */
+    display: block;
+    overflow: visible;
   }
+
+  .dashboard-stage {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* Grid becomes a plain block — children stack naturally */
+  .dashboard-grid {
+    display: block;
+  }
+
+  /* ── Hero section: full viewport, centered ── */
+  .dashboard-hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    /* Bottom padding clears fixed nav (≈80px) so card isn't hidden under it */
+    padding: clamp(20px, 4vh, 36px) 18px calc(72px + env(safe-area-inset-bottom, 0px));
+    position: relative;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+  }
+
+  .dashboard-hero-card {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* Make the IAM card fill the hero card wrapper */
+  .dashboard-hero-card .card-wrapper--iam,
+  .dashboard-hero-card .card-iam {
+    height: auto;
+    min-height: clamp(340px, 52vh, 460px);
+  }
+
+  /* ── Secondary section: Projects + Contact below fold ── */
+  .dashboard-secondary-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 18px calc(var(--space-12) + 72px);
+    /* Undo display:contents from desktop */
+  }
+
+  .card-action {
+    min-height: 160px;
+    padding: 22px;
+  }
+
+  /* ── Ambient decoration adjustments ── */
   .dashboard-watermark {
     font-size: clamp(64px, 22vw, 110px);
     top: 18%;
@@ -1420,12 +1499,38 @@ textarea,
   .dashboard-particle {
     display: none;
   }
-  .card-iam {
-    min-height: 420px;
+
+  /* ── Scroll cue ── */
+  .scroll-cue {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    margin-top: 18px;
+    /* Transition for the fade-out on scroll */
+    transition: opacity 350ms ease, transform 350ms ease;
+    animation: scrollCueBounce 1.8s ease-in-out infinite;
+    /* Override any button defaults */
+    padding: 0;
+    outline: none;
   }
-  .card-action {
-    min-height: 160px;
-    padding: 22px;
+
+  .scroll-cue:focus-visible {
+    outline: 2px solid rgba(201, 166, 107, 0.8);
+    outline-offset: 3px;
+  }
+
+  @keyframes scrollCueBounce {
+    0%, 100% { transform: translateY(0);   opacity: 0.6; }
+    50%        { transform: translateY(6px); opacity: 1;   }
   }
 }
 
