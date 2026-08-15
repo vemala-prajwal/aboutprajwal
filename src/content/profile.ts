@@ -1,8 +1,8 @@
 export const profile = {
-  name: "Alex Morgan",
+  name: "Vemala Prajwal",
   title: "Product Designer & Developer",
-  email: "hello@alexmorgan.dev",
-  avatar: "/avatar.svg",
+  email: "vemalaprajwal8200@gmail.com",
+  avatar: "/projects/profile.png",
   available: true,
   intro: [
     "I design and build digital products with a focus on clarity and restraint.",

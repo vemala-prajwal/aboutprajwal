@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FolderOpen, Mail } from 'lucide-react';
 
-const SHORT_BIO = `A short line about who you are and what you do. Replace this with your real, longer bio.`;
+const SHORT_BIO = `A student aware of AI product designer blending creativity, strategy, and AI-driven thinking to craft intuitive digital...`;
 
 const PARTICLES = Array.from({ length: 10 }, (_, i) => i);
 
@@ -35,36 +35,42 @@ export default function DashboardCards() {
       <div className="dashboard-stage">
         <div className="dashboard-grid">
           {/* LEFT HALF — I am, full-bleed photo, header top / bio bottom */}
-          <Link href="/about" className="card card-iam">
-            <span className="card-index">01</span>
-            <Image
-              src="/profile.jpg"
-              alt="Alex Morgan"
-              fill
-              className="card-iam-photo"
-              style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
-              priority
-            />
-            <div className="card-iam-scrim-top" />
-            <div className="card-iam-scrim-bottom" />
+          <Link href="/about" className="card-wrapper card-wrapper--iam">
+            <div className="card-inner card-iam">
+              <span className="card-index">01</span>
+              <Image
+                src="/projects/profile.png"
+                alt="Vemala Prajwal"
+                fill
+                className="card-iam-photo"
+                style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
+                priority
+              />
+              <div className="card-iam-scrim-top" />
+              <div className="card-iam-scrim-bottom" />
 
-            <div className="card-iam-header">
-              <p className="card-eyebrow">I am</p>
-              <h2 className="card-name">Your Name</h2>
-            </div>
+              <div className="card-iam-header">
+                <p className="card-eyebrow">I am</p>
+                <h2 className="card-name hero-name">
+                  <span className="hero-name__secondary">Vemala</span>
+                  <span className="hero-name__divider" aria-hidden />
+                  <span className="hero-name__primary">Prajwal</span>
+                </h2>
+              </div>
 
-            <div className="card-iam-footer">
-              <p className="card-body card-body-clamp">{SHORT_BIO}</p>
-              <span className="card-readmore">
-                Read more →
-              </span>
+              <div className="card-iam-footer">
+                <p className="card-body card-body-clamp">{SHORT_BIO}</p>
+                <span className="card-readmore">
+                  Read more <span className="arrow">→</span>
+                </span>
+              </div>
             </div>
           </Link>
 
           {/* RIGHT HALF — Projects + Contact stacked */}
           <div className="card-stack">
-            <Link href="/projects" className="card-link">
-              <div className="card card-action card-action--projects">
+            <Link href="/projects" className="card-wrapper">
+              <div className="card-inner card-action card-action--projects">
                 <span className="card-index">02</span>
                 <div className="card-action-noise" />
                 <div>
@@ -78,8 +84,8 @@ export default function DashboardCards() {
               </div>
             </Link>
 
-            <Link href="/contact" className="card-link">
-              <div className="card card-action card-action--contact">
+            <Link href="/contact" className="card-wrapper">
+              <div className="card-inner card-action card-action--contact">
                 <span className="card-index">03</span>
                 <div className="card-action-noise" />
                 <div>
