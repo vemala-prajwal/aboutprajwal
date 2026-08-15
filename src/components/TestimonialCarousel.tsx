@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const QUOTES = [
   {
     text: 'A genuinely thoughtful designer — sharp instincts, clean process, and someone who elevates every project they touch.',
-    attr: 'Someone, Their Title at Company',
+    attr: 'Someone, Their Title ABOUT ME',
   },
   {
     text: 'Reliable, fast, and always brings a point of view. Exactly who you want in the room for a hard design problem.',
@@ -20,6 +20,11 @@ const QUOTES = [
 export default function TestimonialCarousel() {
   const [index, setIndex] = useState(0);
   const active = QUOTES[index];
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % QUOTES.length), 5000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div className="hero-quote-wrap" role="region" aria-label="Testimonials">

@@ -2,62 +2,45 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ProfileAvatar } from "./ProfileAvatar";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
+  { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Taskbar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed bottom-6 left-1/2 z-20 -translate-x-1/2">
-      <div className="flex items-center gap-1 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.8)] px-2 py-1.5 backdrop-blur-[12px]">
-        <nav className="flex items-center gap-1" aria-label="Main">
-          {navItems.map((item) => {
-            const active =
-              item.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(item.href);
+    <header className="fixed bottom-4 left-1/2 z-40 w-max max-w-[calc(100vw_-_1.5rem)] -translate-x-1/2 sm:bottom-6">
+      <nav
+        className="flex max-w-full items-center gap-0.5 rounded-full border border-[rgba(20,20,20,0.1)] bg-[rgba(250,250,248,0.84)] p-1 shadow-[0_12px_32px_rgba(20,20,20,0.12)] backdrop-blur-xl"
+        aria-label="Primary navigation"
+      >
+        {navItems.map((item) => {
+          const active =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative px-4 py-2 text-[11px] font-medium uppercase tracking-[0.12em] transition-opacity duration-200 ${
-                  active
-                    ? "text-[var(--color-text)]"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-                }`}
-              >
-                {item.label}
-                {active && (
-                  <span className="absolute bottom-1 left-1/2 h-px w-3 -translate-x-1/2 bg-[var(--color-accent)]" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="mx-1 h-4 w-px bg-[var(--color-border)]" aria-hidden />
-
-        <Link
-          href="/contact"
-          className={`px-4 py-2 text-[11px] font-medium uppercase tracking-[0.12em] transition-opacity duration-200 ${
-            pathname === "/contact"
-              ? "text-[var(--color-text)]"
-              : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-          }`}
-        >
-          Contact
-        </Link>
-
-        <div className="mx-1 h-4 w-px bg-[var(--color-border)]" aria-hidden />
-
-        <ProfileAvatar />
-      </div>
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className={`inline-flex min-h-9 items-center justify-center rounded-full px-2 text-[9px] font-semibold uppercase tracking-[0.09em] no-underline transition-[background-color,color,box-shadow,transform] duration-200 sm:min-h-10 sm:px-3.5 sm:text-[10px] ${
+                active
+                  ? "bg-[#1a1a1a] text-white shadow-[0_2px_8px_rgba(20,20,20,0.18)]"
+                  : "text-[rgba(20,20,20,0.58)] hover:-translate-y-px hover:bg-white/70 hover:text-[#1a1a1a]"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
     </header>
   );
 }

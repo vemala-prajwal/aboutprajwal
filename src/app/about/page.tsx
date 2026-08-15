@@ -2,16 +2,17 @@ import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import AboutHero from '@/components/AboutHero';
 
-const SKILLS = ['UI Design', 'UX Research', 'Figma', 'Webflow', 'Prototyping'];
+const SKILLS = ['UI Design', 'UX Research', 'Figma', 'Prototyping'];
 const INTERESTS = ['Typography', 'Design Systems', 'Motion Design'];
 const HOBBIES = [
   { title: 'Film Photography', desc: 'Shooting mostly on 35mm, developing at home when I can.' },
-  { title: 'Long-form Reading', desc: 'Mostly nonfiction — design theory, history, and biographies.' },
-  { title: 'Morning Runs', desc: 'A slow 5k most mornings, more for the quiet than the exercise.' },
+  { title: 'Listening To Music', desc: 'Gives My Mind A Break' },
+  { title: 'Playing Football', desc: 'Still A Learner' },
 ];
 const EDUCATION = [
-  { years: '2019 — 2023', title: 'B.Des, Product Design', place: 'Your Institute Name' },
-  { years: '2023 — Present', title: 'Self-directed study', place: 'Design systems, motion, front-end' },
+  { years: '2011 — 2021', title: '1st - 7th Grade', place: 'St. Thomus Public School' },
+  { years: '2022 — 2024', title: '8th - 10th Grade', place: 'Oxford English High School' },
+  { years: '2024 — 2026', title: '11th - 12th Grade', place: 'Narayana PU College' },
 ];
 
 export default function AboutPage() {

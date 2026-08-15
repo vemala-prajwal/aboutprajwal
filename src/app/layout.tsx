@@ -1,6 +1,8 @@
 import BackgroundCanvas from '@/components/BackgroundCanvas';
 import GrainOverlay from '@/components/GrainOverlay';
 import CustomCursor from '@/components/CustomCursor';
+import IntroLoader from '@/components/IntroLoader';
+import { Taskbar } from '@/components/Taskbar';
 import './globals.css';
 import { Instrument_Sans, Fraunces, Source_Serif_4 } from 'next/font/google';
 
@@ -32,9 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <BackgroundCanvas />
         <GrainOverlay />
         <CustomCursor />
+        <IntroLoader />
         <div style={{ position: 'relative', zIndex: 10 }}>
           {children}
         </div>
+        <Taskbar />
       </body>
     </html>
   );

@@ -1,58 +1,19 @@
 "use client";
 
-import Link from 'next/link';
 import TestimonialCarousel from './TestimonialCarousel';
+import { Mail, Phone } from 'lucide-react';
 
-function IconLink(props: { size?: number; strokeWidth?: number }) {
+function IconInstagram(props: { size?: number; strokeWidth?: number }) {
   const s = props.size ?? 18;
   const strokeWidth = props.strokeWidth ?? 1.6;
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 14a3 3 0 0 1 0-4l3-3a3 3 0 0 1 4 4l-1 1" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M14 10a3 3 0 0 1 0 4l-3 3a3 3 0 0 1-4-4l1-1" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth={strokeWidth} />
+      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth={strokeWidth} />
+      <circle cx="17.5" cy="6.5" r="0.7" fill="currentColor" />
     </svg>
   );
 }
-
-function IconCode(props: { size?: number; strokeWidth?: number }) {
-  const s = props.size ?? 18;
-  const strokeWidth = props.strokeWidth ?? 1.6;
-  return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 18l6-6-6-6" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" transform="translate(-8,0)" />
-      <path d="M8 6l-6 6 6 6" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" transform="translate(8,0)" />
-    </svg>
-  );
-}
-
-function IconMusic(props: { size?: number; strokeWidth?: number }) {
-  const s = props.size ?? 18;
-  const strokeWidth = props.strokeWidth ?? 1.6;
-  return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 17a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" transform="translate(0,-6)" />
-      <path d="M9 11V3l10 4v8" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconCalendar(props: { size?: number; strokeWidth?: number }) {
-  const s = props.size ?? 18;
-  const strokeWidth = props.strokeWidth ?? 1.6;
-  return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" strokeWidth={strokeWidth} />
-      <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" />
-    </svg>
-  );
-}
-
-const SOCIALS = [
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourname', Icon: IconLink },
-  { label: 'GitHub', href: 'https://github.com/yourname', Icon: IconCode },
-  { label: 'Spotify', href: 'https://open.spotify.com/user/yourname', Icon: IconMusic },
-  { label: 'Calendly', href: 'https://calendly.com/yourname', Icon: IconCalendar },
-];
 
 export default function AboutHero() {
   return (
@@ -68,19 +29,18 @@ export default function AboutHero() {
 
         <div className="hero-bio">
           <p className="hero-bio-lead">
-            Your Name is a modern AI-aware product designer blending
-            creativity, strategy, and AI-driven thinking to craft intuitive
-            digital experiences. With years of experience across UX/UI,
-            accessibility, and emerging technologies, he transforms complex
-            ideas into seamless user journeys across platforms.
+            Vemala Prajwal is a student aware of AI product designer blending
+            creativity, strategy, and AI-driven thinking to craft intuitive digital
+            experiences. With constant learning UX/UI, accessibility, and emerging
+            technologies, he transforms complex ideas into seamless user journeys
+            across platforms.
           </p>
           <p className="hero-bio-body">
-            Known for a sharp aesthetic, calm process, and fast-moving
-            execution, he elevates every project through thoughtful systems,
-            smarter workflows, and future-focused thinking. Beyond design, he
-            shares insights through writing and conversations around AI,
-            product strategy, and digital craft.{' '}
-            <a href="#" className="hero-inline-link">Read more.</a>
+            Known for a sharp aesthetic, calm process, and fast-moving execution, he
+            elevates every project through thoughtful systems, smarter workflows,
+            and future-focused thinking. Beyond design, he shares insights through
+            writing and conversations around AI, product strategy, and digital
+            craft.
           </p>
         </div>
       </div>
@@ -89,30 +49,26 @@ export default function AboutHero() {
       <aside className="hero-right">
         <p className="hero-contact-label">If you like my work, contact me!</p>
 
-        <a href="mailto:you@example.com" className="hero-email">
-          you@example.com
-        </a>
+        <div className="contact-list">
+          <a href="mailto:vemalaprajwal8200@gmail.com" className="contact-item">
+            <Mail size={16} strokeWidth={1.75} />
+            <span>vemalaprajwal8200@gmail.com</span>
+          </a>
 
-        <a href="/resume.pdf" target="_blank" rel="noreferrer" className="hero-cv">
-          Download CV
-        </a>
+          <a href="tel:+919380753581" className="contact-item">
+            <Phone size={16} strokeWidth={1.75} />
+            <span>+91 93807 53581</span>
+          </a>
 
-        <div className="hero-social-row">
-          {SOCIALS.map((s) => {
-            const Icon = s.Icon;
-            return (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                className="hero-social-box"
-                aria-label={s.label}
-              >
-                <Icon size={18} strokeWidth={1.75} />
-              </a>
-            );
-          })}
+          <a
+            href="https://instagram.com/nameisprajwal"
+            target="_blank"
+            rel="noreferrer"
+            className="contact-item"
+          >
+            <IconInstagram size={16} strokeWidth={1.75} />
+            <span>@nameisprajwal</span>
+          </a>
         </div>
 
         <TestimonialCarousel />

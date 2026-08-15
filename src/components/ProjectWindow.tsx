@@ -3,12 +3,16 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import type { Project } from "@/content/projects";
 
 export function ProjectWindow({ project }: { project: Project }) {
   const router = useRouter();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [imageAspects, setImageAspects] = useState<Record<number, string>>({});
 
   const close = () => router.push("/projects");
 
@@ -16,12 +20,54 @@ export function ProjectWindow({ project }: { project: Project }) {
     closeRef.current?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") router.push("/projects");
+      if (event.key === "Escape") {
+        if (lightboxIndex !== null) setLightboxIndex(null);
+        else router.push("/projects");
+      }
+
+      if (event.key === "ArrowRight" && lightboxIndex !== null) {
+        setLightboxIndex((i) => (i === null ? null : Math.min((project.images?.length ?? 1) - 1, i + 1)));
+      }
+      if (event.key === "ArrowLeft" && lightboxIndex !== null) {
+        setLightboxIndex((i) => (i === null ? null : Math.max(0, i - 1)));
+      }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [router]);
+
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const onScroll = () => setScrolled(el.scrollTop > 8);
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const trapFocus = useCallback((e: KeyboardEvent) => {
+    if (e.key !== "Tab") return;
+    const container = document.querySelector('[role="dialog"]');
+    if (!container) return;
+    const focusable = Array.from(container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    )).filter(Boolean);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", trapFocus);
+    return () => window.removeEventListener("keydown", trapFocus);
+  }, [trapFocus]);
 
   return (
     <>
@@ -29,150 +75,247 @@ export function ProjectWindow({ project }: { project: Project }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="fixed inset-0 z-30 bg-[rgba(18,18,18,0.4)] backdrop-blur-[2px]"
+        transition={{ duration: 0.22 }}
+        className="fixed inset-0 z-30 project-panel-backdrop"
         onClick={close}
         aria-hidden
       />
 
+
       <motion.article
-        initial={{ opacity: 0, y: 24, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 16, scale: 0.98 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="fixed left-1/2 top-1/2 z-40 max-h-[calc(100dvh-7rem)] w-[calc(100%-2rem)] max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.95)] backdrop-blur-[16px]"
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 project-panel"
+        style={{ ['--color-accent' as any]: project.accent ?? undefined }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-title"
+        onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex items-center justify-between border-b border-[var(--color-border)] px-6 py-4">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
-              {project.filename}
-            </span>
+        <header className={`project-panel-header ${scrolled ? "sticky" : ""}`}>
+          <div>
+            <div className="eyebrow">{project.filename?.toUpperCase()}</div>
           </div>
           <button
             ref={closeRef}
             type="button"
             onClick={close}
-            className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-border)] text-[var(--color-text-muted)] transition-colors duration-200 hover:border-[var(--color-border-hover)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
-            aria-label="Close"
+            className="close-btn"
+            aria-label="Close project details"
           >
-            &times;
+            <span>&times;</span>
           </button>
         </header>
 
-        <div className="max-h-[calc(100dvh-11rem)] overflow-y-auto px-6 py-8">
-          {project.logo && (
-            <div className="project-window-logo">
-              <Image src={project.logo} alt={project.title} width={72} height={72} style={{ objectFit: "cover" }} />
+        <div ref={bodyRef} className="project-panel-body" onClick={(e) => e.stopPropagation()}>
+          <div className="project-window-logo" aria-hidden>
+            {project.logo ? (
+              <Image src={project.logo} alt={project.title} width={64} height={64} style={{ objectFit: "cover", borderRadius: "var(--radius-md)" }} />
+            ) : project.logoText ? (
+              <div className="logo-placeholder--text" aria-hidden>{project.logoText.toUpperCase()}</div>
+            ) : (
+              <div className="logo-placeholder" aria-hidden>
+                {project.title.split(' ').map((s) => s[0]).slice(0,2).join('').toUpperCase()}
+              </div>
+            )}
+          </div>
+
+          <div className="project-metadata">
+            <div className="muted">{project.year}</div>
+            <span className="dot" />
+            <div className="muted">{project.role}</div>
+          </div>
+
+          <h1 id="project-title" className="project-title">{project.title}</h1>
+          {project.status && (
+            <div className="status-badge" aria-hidden style={{ marginTop: 8 }}>
+              <span className="status-badge__dot" />
+              <span>{project.status === 'in-progress' ? 'IN PROGRESS' : project.status.toUpperCase()}</span>
             </div>
           )}
 
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
-            {project.year} · {project.role}
-          </p>
+          <p className="project-lede">{project.summary}</p>
 
-          <h1
-            id="project-title"
-            className="mb-4 text-2xl font-medium tracking-tight text-[var(--color-text)]"
-          >
-            {project.title}
-          </h1>
+          {/* Chips (metadata) */}
+          {(project.chips || project.earnings) && (
+            <div style={{ marginBottom: '12px' }}>
+              {project.chips?.map((c) => (
+                <span key={c} className="chip">{c}</span>
+              ))}
+              {project.earnings ? (
+                <span className="chip accent">{project.earnings} earned</span>
+              ) : null}
+            </div>
+          )}
 
-          <p className="mb-8 text-[var(--color-text-muted)]">{project.summary}</p>
+          {/* Link buttons (Live site + GitHub) */}
+          {(project.liveUrl || project.githubUrl) && (
+            <div className="link-buttons">
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary-link"
+                  aria-label={`Visit ${project.title} live site (opens in new tab)`}
+                >
+                  <span className="icon" aria-hidden>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </span>
+                  <span>Live Site</span>
+                </a>
+              )}
 
-          <section className="mb-8" aria-labelledby="visual-notes">
-            <div className="mb-3 flex items-center justify-between">
-              <p
-                id="visual-notes"
-                className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-muted)]"
-              >
-                Visual notes
-              </p>
-              <span className="font-mono text-[10px] text-[var(--color-text-muted)]">
-                previews
-              </span>
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary-link"
+                  aria-label={`View ${project.title} source on GitHub (opens in new tab)`}
+                >
+                  <span className="icon" aria-hidden>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden>
+                      <path d="M12 .5C5.73.5.9 5.33.9 11.6c0 4.78 3.09 8.83 7.39 10.26.54.1.74-.23.74-.51 0-.25-.01-.92-.01-1.8-3.01.66-3.64-1.45-3.64-1.45-.49-1.25-1.2-1.58-1.2-1.58-.98-.67.07-.66.07-.66 1.08.08 1.65 1.12 1.65 1.12.96 1.65 2.51 1.17 3.12.9.1-.7.38-1.17.69-1.44-2.4-.27-4.93-1.2-4.93-5.34 0-1.18.42-2.14 1.12-2.9-.11-.28-.49-1.42.11-2.96 0 0 .9-.29 2.95 1.1a10.3 10.3 0 0 1 2.68-.36c.91 0 1.83.12 2.68.36 2.05-1.39 2.95-1.1 2.95-1.1.6 1.54.22 2.68.11 2.96.7.76 1.12 1.72 1.12 2.9 0 4.15-2.54 5.07-4.96 5.34.39.34.73 1.02.73 2.06 0 1.48-.01 2.67-.01 3.03 0 .28.2.61.75.51 4.3-1.43 7.39-5.48 7.39-10.26C23.1 5.33 18.27.5 12 .5z" />
+                    </svg>
+                  </span>
+                  <span>GitHub</span>
+                </a>
+              )}
+            </div>
+          )}
+
+
+          <section aria-labelledby="visual-notes">
+            <div className="visual-header">
+              <p id="visual-notes" className="eyebrow muted">Visual notes</p>
+              <div className="tab-group" role="tablist" aria-hidden>
+                <div className="tab active">Previews</div>
+              </div>
             </div>
 
-            {project.images && project.images.length > 0 ? (
-              <div className="grid grid-cols-[1.45fr_0.85fr] gap-3 project-window-visual">
-                <div className="project-window-visual-main overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.98)]">
-                  <Image src={project.images[0]} alt={`${project.title} — desktop`} width={960} height={600} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+            {project.images && project.images.length === 2 ? (
+              <div className={`screenshot-grid two-cols`}>
+                <div className="two-cols-left">
+                  <div
+                    className="screenshot-card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setLightboxIndex(0)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setLightboxIndex(0); }}
+                    style={ imageAspects[0] ? { aspectRatio: imageAspects[0], width: '100%' } : { width: '100%' }}
+                  >
+                    <Image
+                      src={project.images[0]}
+                      alt={`${project.title} — desktop preview`}
+                      width={1200}
+                      height={800}
+                      style={{ objectFit: 'contain', width: '100%', height: '100%', background: 'var(--color-bg-elevated)' }}
+                      onLoad={(e) => {
+                        try {
+                          const img = e.currentTarget as HTMLImageElement;
+                          const w = img.naturalWidth;
+                          const h = img.naturalHeight;
+                          if (w && h) setImageAspects((s) => ({ ...s, 0: `${w} / ${h}` }));
+                        } catch (err) { }
+                      }}
+                    />
+                  </div>
+
+                  <div className="feature-area">
+                    <p className="screenshot-caption">Final screens and process artifacts will live here.</p>
+
+                    <div className="feature-list">
+                      {(() => {
+                        const items = (project as any).featuresDetailed
+                          ? (project as any).featuresDetailed
+                          : (project.features ?? []).map((f) => ({ label: f.split(' ').slice(0,2).join(' ').replace(/[^A-Za-z]/g,'').toUpperCase(), text: f }));
+
+                        return items.map((fi: any, idx: number) => (
+                          <div key={fi.label + idx} className="feature-item" style={{ animationDelay: `${idx * 80}ms` }}>
+                            <div className="feature-num">{String(idx+1).padStart(2,'0')}</div>
+                            <div className="feature-meta">
+                              <div className="feature-label">{fi.label.toUpperCase()}</div>
+                              <div className="feature-desc">{fi.text}</div>
+                            </div>
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="project-window-visual-side grid gap-3">
-                  <div className="project-window-visual-mobile overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.98)] flex items-center justify-center p-3">
-                    <Image src={project.images[1] ?? project.images[0]} alt={`${project.title} — mobile`} width={320} height={180} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
-                  </div>
-                  {project.images[2] ? (
-                    <div className="project-window-visual-mobile overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.98)] flex items-center justify-center p-3">
-                      <Image src={project.images[2]} alt={`${project.title} — mobile 2`} width={320} height={180} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-[1.45fr_0.85fr] gap-3">
-                <div className="aspect-[16/10] overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.9)] p-3">
-                  <div className="flex h-full flex-col border border-[var(--color-border)] p-2">
-                    <div className="mb-3 flex items-center gap-1.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-                      <span className="h-px w-8 bg-[var(--color-border-hover)]" />
-                    </div>
-                    <div className="grid flex-1 grid-cols-[0.55fr_1fr] gap-2">
-                      <div className="border border-[var(--color-border)]" />
-                      <div className="space-y-2">
-                        <div className="h-1/3 border border-[var(--color-border)]" />
-                        <div className="grid h-[calc(66.666%-0.5rem)] grid-cols-2 gap-2">
-                          <div className="border border-[var(--color-border)]" />
-                          <div className="border border-[var(--color-border)]" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid gap-3">
-                  <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.9)] p-3">
-                    <span className="absolute right-3 top-3 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
-                      01
-                    </span>
-                    <div className="mt-5 h-1/2 border border-[var(--color-border)]" />
-                  </div>
-                  <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[rgba(255,255,255,0.9)] p-3">
-                    <span className="absolute right-3 top-3 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
-                      02
-                    </span>
-                    <div className="mt-5 flex gap-1.5">
-                      <span className="h-8 flex-1 border border-[var(--color-border)]" />
-                      <span className="h-8 flex-1 border border-[var(--color-border)]" />
-                    </div>
+                <div className="two-cols-right">
+                  <div
+                    className="screenshot-card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setLightboxIndex(1)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setLightboxIndex(1); }}
+                    style={ imageAspects[1] ? { aspectRatio: imageAspects[1], width: '100%', height: '100%' } : { width: '100%' }}
+                  >
+                    <Image
+                      src={project.images[1]}
+                      alt={`${project.title} — mobile preview`}
+                      width={400}
+                      height={900}
+                      style={{ objectFit: 'contain', width: '100%', height: '100%', background: 'var(--color-bg-elevated)' }}
+                      onLoad={(e) => {
+                        try {
+                          const img = e.currentTarget as HTMLImageElement;
+                          const w = img.naturalWidth;
+                          const h = img.naturalHeight;
+                          if (w && h) setImageAspects((s) => ({ ...s, 1: `${w} / ${h}` }));
+                        } catch (err) { }
+                      }}
+                    />
                   </div>
                 </div>
               </div>
-            )}
-
-            <p className="mt-3 text-xs text-[var(--color-text-muted)]">
-              Final screens and process artifacts will live here.
-            </p>
+            ) : project.images && project.images.length === 0 ? (
+              <div className="screenshot-placeholder">Screenshots coming soon.</div>
+            ) : project.images && project.images.length > 0 ? (
+              <div className={`screenshot-grid ${project.images.length === 2 ? 'two-cols' : ''}`}>
+                {project.images.map((src, idx) => (
+                  <div
+                    key={src}
+                    className="screenshot-card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setLightboxIndex(idx)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setLightboxIndex(idx); }}
+                    style={ imageAspects[idx] ? { aspectRatio: imageAspects[idx], width: '100%' } : { width: '100%' } }
+                  >
+                    <Image
+                      src={src}
+                      alt={`${project.title} — preview ${idx + 1}`}
+                      width={900}
+                      height={600}
+                      style={{ objectFit: 'contain', width: '100%', height: '100%', background: 'var(--color-bg-elevated)' }}
+                      onLoad={(e) => {
+                        try {
+                          const img = e.currentTarget as HTMLImageElement;
+                          const w = img.naturalWidth;
+                          const h = img.naturalHeight;
+                          if (w && h) setImageAspects((s) => ({ ...s, [idx]: `${w} / ${h}` }));
+                        } catch (err) { /* ignore */ }
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </section>
 
-          <div className="mb-8 space-y-4 text-sm leading-relaxed text-[var(--color-text)]">
+          <div className="project-description mb-8">
             {project.description.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
 
-          {project.features && project.features.length > 0 && (
-            <div className="project-window-block">
-              <p className="project-window-label">Key features</p>
-              <ul className="project-window-list">
-                {project.features.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          
 
           {project.tech && project.tech.length > 0 && (
             <div className="project-window-block">
@@ -205,6 +348,30 @@ export function ProjectWindow({ project }: { project: Project }) {
           </ul>
         </div>
       </motion.article>
+      {lightboxIndex !== null && project.images && (
+        <div className="lightbox-backdrop" role="dialog" aria-modal="true" onClick={() => setLightboxIndex(null)}>
+          <button aria-label="Close preview" className="close-btn" style={{ position: 'absolute', right: 24, top: 24, zIndex: 62 }} onClick={() => setLightboxIndex(null)}>×</button>
+          <div onClick={(e) => e.stopPropagation()} style={{ position: 'relative' }}>
+            <Image src={project.images[lightboxIndex]} alt={`${project.title} — large preview`} width={1600} height={1000} className="lightbox-image" />
+            <div className="lightbox-nav">
+              <button
+                aria-label="Previous image"
+                className="lightbox-arrow left"
+                onClick={() => setLightboxIndex((i) => (i === null ? null : Math.max(0, i - 1)))}
+              >
+                ‹
+              </button>
+              <button
+                aria-label="Next image"
+                className="lightbox-arrow right"
+                onClick={() => setLightboxIndex((i) => (i === null ? null : Math.min((project.images!.length) - 1, i + 1)))}
+              >
+                ›
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
