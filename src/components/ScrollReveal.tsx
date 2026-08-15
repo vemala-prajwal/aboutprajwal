@@ -10,8 +10,7 @@ export default function ScrollReveal({ children }: { children: React.ReactNode }
       entries.forEach((e) => {
         if (e.isIntersecting) {
           e.target.classList.add("is-revealed");
-          // optional: unobserve to avoid repeated triggers
-          (e.target as Element)._observed && io.unobserve(e.target);
+          io.unobserve(e.target);
         }
       });
     }, { threshold: 0.12 });

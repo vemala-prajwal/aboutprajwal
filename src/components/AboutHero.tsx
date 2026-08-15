@@ -3,42 +3,46 @@
 import Link from 'next/link';
 import TestimonialCarousel from './TestimonialCarousel';
 
-function IconLink(props: { size?: number }) {
+function IconLink(props: { size?: number; strokeWidth?: number }) {
   const s = props.size ?? 18;
+  const strokeWidth = props.strokeWidth ?? 1.6;
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 14a3 3 0 0 1 0-4l3-3a3 3 0 0 1 4 4l-1 1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M14 10a3 3 0 0 1 0 4l-3 3a3 3 0 0 1-4-4l1-1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 14a3 3 0 0 1 0-4l3-3a3 3 0 0 1 4 4l-1 1" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14 10a3 3 0 0 1 0 4l-3 3a3 3 0 0 1-4-4l1-1" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function IconCode(props: { size?: number }) {
+function IconCode(props: { size?: number; strokeWidth?: number }) {
   const s = props.size ?? 18;
+  const strokeWidth = props.strokeWidth ?? 1.6;
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 18l6-6-6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" transform="translate(-8,0)" />
-      <path d="M8 6l-6 6 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" transform="translate(8,0)" />
+      <path d="M16 18l6-6-6-6" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" transform="translate(-8,0)" />
+      <path d="M8 6l-6 6 6 6" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" transform="translate(8,0)" />
     </svg>
   );
 }
 
-function IconMusic(props: { size?: number }) {
+function IconMusic(props: { size?: number; strokeWidth?: number }) {
   const s = props.size ?? 18;
+  const strokeWidth = props.strokeWidth ?? 1.6;
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 17a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" transform="translate(0,-6)" />
-      <path d="M9 11V3l10 4v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 17a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" transform="translate(0,-6)" />
+      <path d="M9 11V3l10 4v8" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function IconCalendar(props: { size?: number }) {
+function IconCalendar(props: { size?: number; strokeWidth?: number }) {
   const s = props.size ?? 18;
+  const strokeWidth = props.strokeWidth ?? 1.6;
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" strokeWidth={strokeWidth} />
+      <path d="M16 3v4M8 3v4M3 11h18" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" />
     </svg>
   );
 }

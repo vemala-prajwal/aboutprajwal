@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { CustomCursor } from "./CustomCursor";
+import CustomCursor from "./CustomCursor";
 import { Taskbar } from "./Taskbar";
 
 export function AppShell({ children }: { children: ReactNode }) {

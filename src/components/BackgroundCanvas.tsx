@@ -8,8 +8,12 @@ export default function BackgroundCanvas() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const canvasEl = canvas;
+    const context = ctx;
 
     let width = 0;
     let height = 0;
@@ -17,7 +21,7 @@ export default function BackgroundCanvas() {
     let dots: { x: number; y: number }[] = [];
     const spacing = 36;
     const mouse = { x: -9999, y: -9999 };
-    let animationId: number;
+    let animationId = 0;
     let glowT = 0;
 
     const reducedMotion = window.matchMedia(
@@ -27,11 +31,11 @@ export default function BackgroundCanvas() {
     function resize() {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvasEl.width = width * dpr;
+      canvasEl.height = height * dpr;
+      canvasEl.style.width = width + 'px';
+      canvasEl.style.height = height + 'px';
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       dots = [];
       for (let x = spacing / 2; x < width; x += spacing) {
@@ -42,25 +46,25 @@ export default function BackgroundCanvas() {
     }
 
     function draw() {
-      ctx.clearRect(0, 0, width, height);
+      context.clearRect(0, 0, width, height);
 
       // base fill
-      ctx.fillStyle = '#FAFAF8';
-      ctx.fillRect(0, 0, width, height);
+      context.fillStyle = '#FAFAF8';
+      context.fillRect(0, 0, width, height);
 
       // slow drifting glow
       glowT += 0.0025;
       const glowX = width * 0.5 + Math.sin(glowT) * width * 0.3;
       const glowY = height * 0.5 + Math.cos(glowT * 0.8) * height * 0.3;
       const glowRadius = Math.max(width, height) * 0.45;
-      const gradient = ctx.createRadialGradient(
+      const gradient = context.createRadialGradient(
         glowX, glowY, 0,
         glowX, glowY, glowRadius
       );
       gradient.addColorStop(0, 'rgba(201,166,107,0.06)'); // accent glow
       gradient.addColorStop(1, 'rgba(201,166,107,0)');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, width, height);
 
       // dot grid, brightens near cursor
       const reactRadius = 140;
@@ -76,10 +80,10 @@ export default function BackgroundCanvas() {
         const alpha = 0.10 + t * 0.35;
         const radius = 1.5 + t * 1.5;
 
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,0,0,${alpha})`;
-        ctx.fill();
+        context.beginPath();
+        context.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+        context.fillStyle = `rgba(0,0,0,${alpha})`;
+        context.fill();
       }
 
       if (!reducedMotion) {

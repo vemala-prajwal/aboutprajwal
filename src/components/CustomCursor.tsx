@@ -15,41 +15,44 @@ export default function CustomCursor() {
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    let mouseX = -1000,
-      mouseY = -1000;
-    let ringX = -1000,
-      ringY = -1000;
+    const dotEl = dot;
+    const ringEl = ring;
+
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let ringX = -1000;
+    let ringY = -1000;
     let rafId = 0;
 
     function handleMove(e: MouseEvent) {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-      dot.style.opacity = '1';
-      ring.style.opacity = '0.9';
+      dotEl.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      dotEl.style.opacity = '1';
+      ringEl.style.opacity = '0.9';
     }
 
     function animateRing() {
       ringX += (mouseX - ringX) * 0.18;
       ringY += (mouseY - ringY) * 0.18;
-      ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      ringEl.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
       rafId = requestAnimationFrame(animateRing);
     }
 
     function handleMouseDown() {
-      ring.classList.add('cursor-ring-active');
+      ringEl.classList.add('cursor-ring-active');
     }
     function handleMouseUp() {
-      ring.classList.remove('cursor-ring-active');
+      ringEl.classList.remove('cursor-ring-active');
     }
 
     function handleOver(e: MouseEvent) {
       const target = e.target as HTMLElement | null;
       if (!target) return;
       if (target.closest('a, button, [role="button"], input, textarea')) {
-        ring.classList.add('cursor-ring-hover');
+        ringEl.classList.add('cursor-ring-hover');
       } else {
-        ring.classList.remove('cursor-ring-hover');
+        ringEl.classList.remove('cursor-ring-hover');
       }
     }
 
