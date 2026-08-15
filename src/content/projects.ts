@@ -132,7 +132,7 @@ export const projects: Project[] = [
     chips: ["Personal Project"],
     earnings: undefined,
     accent: "#6c5ce7",
-    liveUrl: "https://aboutprajwal.vercel.app",
+    liveUrl: "https://portfolio-egb-developers.vercel.app/",
     githubUrl: "https://github.com/vemala-prajwal/Portfolio-EGB_developers",
     status: "in-progress",
     featuresDetailed: [
