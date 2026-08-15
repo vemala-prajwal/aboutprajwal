@@ -75,25 +75,25 @@ export function ProjectWindow({ project }: { project: Project }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.22 }}
+        transition={{ duration: 0.2 }}
         className="fixed inset-0 z-30 project-panel-backdrop"
         onClick={close}
         aria-hidden
       />
 
-
-      <motion.article
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 project-panel"
-        style={{ ['--color-accent' as any]: project.accent ?? undefined }}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="project-title"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-0 md:p-6 pointer-events-none">
+        <motion.article
+          initial={{ opacity: 0, scale: 0.97, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.97, y: 12 }}
+          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          className="pointer-events-auto project-panel w-full h-[100dvh] md:h-auto md:max-h-[88vh] md:max-w-4xl"
+          style={{ ['--color-accent' as any]: project.accent ?? undefined }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-title"
+          onClick={(e) => e.stopPropagation()}
+        >
         <header className={`project-panel-header ${scrolled ? "sticky" : ""}`}>
           <div>
             <div className="eyebrow">{project.filename?.toUpperCase()}</div>
@@ -348,6 +348,7 @@ export function ProjectWindow({ project }: { project: Project }) {
           </ul>
         </div>
       </motion.article>
+      </div>
       {lightboxIndex !== null && project.images && (
         <div className="lightbox-backdrop" role="dialog" aria-modal="true" onClick={() => setLightboxIndex(null)}>
           <button aria-label="Close preview" className="close-btn" style={{ position: 'absolute', right: 24, top: 24, zIndex: 62 }} onClick={() => setLightboxIndex(null)}>×</button>
