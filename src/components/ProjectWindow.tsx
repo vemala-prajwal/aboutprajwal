@@ -212,6 +212,7 @@ export function ProjectWindow({ project }: { project: Project }) {
                       alt={`${project.title} — desktop preview`}
                       width={1200}
                       height={800}
+                      sizes="(max-width: 768px) 100vw, 60vw"
                       style={{ objectFit: 'contain', width: '100%', height: '100%', background: 'var(--color-bg-elevated)' }}
                       onLoad={(e) => {
                         try {
@@ -261,6 +262,7 @@ export function ProjectWindow({ project }: { project: Project }) {
                       alt={`${project.title} — mobile preview`}
                       width={400}
                       height={900}
+                      sizes="(max-width: 768px) 100vw, 35vw"
                       style={{ objectFit: 'contain', width: '100%', height: '100%', background: 'var(--color-bg-elevated)' }}
                       onLoad={(e) => {
                         try {

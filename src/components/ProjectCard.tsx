@@ -34,6 +34,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             src={project.image}
             alt={project.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 25vw"
             style={{ objectFit: 'cover' }}
           />
         </div>

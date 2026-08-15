@@ -42,6 +42,7 @@ export default function DashboardCards() {
                 src="/projects/profile.png"
                 alt="Vemala Prajwal"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="card-iam-photo"
                 style={{ objectFit: 'cover', objectPosition: 'center 20%' }}
                 priority
