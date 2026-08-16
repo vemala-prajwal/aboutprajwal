@@ -29,11 +29,12 @@ export default function AboutHero() {
 
         <div className="hero-bio">
           <p className="hero-bio-lead">
-            Vemala Prajwal is a student aware of AI product designer blending
-            creativity, strategy, and AI-driven thinking to craft intuitive digital
-            experiences. With constant learning UX/UI, accessibility, and emerging
-            technologies, he transforms complex ideas into seamless user journeys
-            across platforms.
+            Vemala Prajwal is a 1st year (B.Tech) student from ISE branch who is
+            aware of AI product designer blending creativity, strategy, and
+            AI-driven thinking to craft intuitive digital experiences. With
+            constant learning UX/UI, accessibility, and emerging technologies,
+            he transforms complex ideas into seamless user journeys across
+            platforms.
           </p>
           <p className="hero-bio-body">
             Known for a sharp aesthetic, calm process, and fast-moving execution, he
