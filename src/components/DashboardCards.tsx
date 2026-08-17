@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FolderOpen, Mail } from 'lucide-react';
 
-const SHORT_BIO = `A student aware of AI product designer blending creativity, strategy, and AI-driven thinking to craft intuitive digital...`;
+const SHORT_BIO = `A student aware of AI product designing blending creativity, strategy, and AI-driven thinking to craft intuitive digital...`;
 
 const PARTICLES = Array.from({ length: 10 }, (_, i) => i);
 
